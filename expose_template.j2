@@ -1,0 +1,92 @@
+{# ================================ #}
+{# REAL ESTATE DESCRIPTION GENERATOR #}
+{# Jinja2 Template for Exposé Texts #}
+{# ================================ #}
+
+{% set attr = expose_object.object_attributes %}
+
+Generate a factual, professional, and reader-friendly real estate description in German for an Exposé.
+Use ONLY the following property data. Tailor the description for {{ target_group }} using a {{ text_style }} style.
+
+**PROPERTY DATA:**
+- Immobilientyp: {{ attr.estateType }} ({{ attr.estateSubType }})
+- Lage: {{ attr.town }}, {{ attr.zip }}
+- Kaufpreis: €{{ "{:,.2f}".format(attr.purchasePrice).replace(",", ".") }}
+- Wohnfläche: {{ attr.livingSpace }} m²
+- Grundstücksfläche: {{ attr.realtyArea }} m²
+- Zimmer: {{ attr.rooms }} ({{ attr.bedRooms }} Schlafzimmer, {{ attr.bathRooms }} Badezimmer)
+- Baujahr: {{ attr.constructionYearNumber }}
+- Zustand: {{ attr.condition }}
+- Energieeffizienzklasse: {{ attr.energyEfficiencyRating }}
+{% if attr.energyConsumption %}- Energieverbrauch: {{ attr.energyConsumption }} kWh/(m²a){% endif %}
+
+**AUSSTATTUNG:**
+- Heizung: {{ attr.heatings }}
+- Energiequelle: {{ attr.firings }}
+- Bodenbeläge: {{ attr.floorings|join(', ') if attr.floorings }}
+- Ausstattung: {{ attr.furnishing }}
+- Garten: {{ attr.garden }}
+{% if attr.garages %}- Garagen: {{ attr.garages }}{% endif %}
+{% if attr.parkingSpaces %}- Parkplätze: {{ attr.parkingSpaces }}{% endif %}
+
+**BESONDERE MERKMALE:**
+{% if attr.estateDefaultFeatures %}
+{% for feature in attr.estateDefaultFeatures %}- {{ feature }}
+{% endfor %}
+{% endif %}
+
+**ZIELGRUPPE:** {{ target_group }}
+**TEXTSTIL:** {{ text_style }}
+
+{# ================================ #}
+{# STRUCTURE AND STYLE REQUIREMENTS #}
+{# ================================ #}
+
+{% if text_style == "Ausführlich" -%}
+**ANFORDERUNGEN:**
+- Struktur: Einstieg mit atmosphärischem Satz, danach Fakten, anschließend Ausstattung und Lage
+- Stil: Detailliert, präzise, leicht werblich und ansprechend
+- Fokus: Umfassende Darstellung aller relevanten Fakten für {{ target_group }}
+- Länge: 4–5 Absätze
+{%- elif text_style == "Kompakt" -%}
+**ANFORDERUNGEN:**
+- Struktur: Kurzer, einladender Einstieg, dann wesentliche Fakten
+- Stil: Prägnant, sachlich, mit freundlichen Formulierungen
+- Fokus: Kerninformationen ohne Redundanzen für {{ target_group }}
+- Länge: 2–3 Absätze
+{%- else -%}
+**ANFORDERUNGEN:**
+- Struktur: Einleitender Satz + geordnete Fakten
+- Stil: Informativ, professionell, mit positiver Tonalität
+- Fokus: Alle wichtigen Fakten für {{ target_group }}
+- Länge: 3–4 Absätze
+{%- endif %}
+
+**ZIELGRUPPENSPEZIFISCHE AUSRICHTUNG:**
+{% if target_group == "Familien" -%}
+Beginnen Sie mit einer einladenden Begrüßung, die Platzangebot, Garten, Sicherheit und Nähe zu Schulen hervorhebt.
+{%- elif target_group == "Geschäftsleute" -%}
+Beginnen Sie mit einem repräsentativen Einstieg, betonen Sie Funktionalität, Lagevorteile und Nutzungsoptionen (Büro, Praxis).
+{%- else -%}
+Beginnen Sie mit einem freundlichen Satz, der Komfort, Barrierefreiheit und Nahversorgung betont.
+{%- endif %}
+
+**GENERIERUNGSREGELN – UNBEDINGT EINHALTEN:**
+1. **Faktengenauigkeit:** Verwenden Sie nur die bereitgestellten Daten. Keine erfundenen Informationen.
+2. **Präzise Formulierung:** Exakte Zahlen und Maße (z. B. „306,0 m²“ statt „306 m²“).
+3. **Tonalität:** Sachlich und professionell, aber es sind positive Adjektive erlaubt (z. B. „hell“, „geräumig“, „repräsentativ“) sofern plausibel.
+4. **Strukturierte Darstellung:** Logisch gegliedert, mit klaren Absätzen. Keine Markdown-Formatierung.
+5. **Zielgruppenrelevanz:** Heben Sie Eigenschaften hervor, die für {{ target_group }} von Bedeutung sind.
+6. **Klare Sprache:** Präzise formulieren, Floskeln vermeiden.
+
+**VERBOTEN:**
+- Unrealistische Übertreibungen oder unbelegte Aussagen
+- Informationen außerhalb der bereitgestellten Daten
+- Übermäßig werbliche Phrasen („einmalige Gelegenheit“, „unschlagbar“)
+- Reißerische Superlative ohne Bezug zur Immobilie
+
+**BEISPIEL FÜR EINE GUTE BESCHREIBUNG (Kompakt, Geschäftsleute):**
+"Die Villa in Bonn bietet eine Wohnfläche von 306,0 m² auf einem Grundstück von 259,0 m². Der Kaufpreis beträgt 2.000.000 EUR. Das 1892 erbaute Objekt verfügt über 12 Zimmer, darunter 5 Schlafzimmer und 5 Badezimmer, und ist auf drei Etagen verteilt. Die Gasheizung mit Energieeffizienzklasse D (114,7 kWh/(m²a)) gewährleistet einen effizienten Betrieb. Ein eigener Garten und zwei Stellplätze ergänzen das Angebot."
+
+**AUSGABEFORMAT:**
+Fließender Text in professionellem, ansprechendem Deutsch ohne Abschnittsüberschriften.
